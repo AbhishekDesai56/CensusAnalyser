@@ -1,5 +1,9 @@
 package censusanalyser;
 
+import com.builder.censusanalyser.CSVBuilderException;
+import com.builder.censusanalyser.CSVBuilderFactory;
+import com.builder.censusanalyser.ICSVBuilder;
+
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
@@ -24,6 +28,8 @@ public class CensusAnalyser {
                 type = CensusAnalyserException.ExceptionType.CENSUS_HEADER_PROBLEM;
             }
             throw new CensusAnalyserException(e.getMessage(), type);
+        } catch (CSVBuilderException e) {
+            throw new CensusAnalyserException(e.getMessage(), e.type.name());
         }
     }
 
@@ -31,7 +37,7 @@ public class CensusAnalyser {
         try (Reader reader = Files.newBufferedReader(Paths.get(csvFilePath))) {
             ICSVBuilder csvBuilder = CSVBuilderFactory.createCSVBuilder();
             Iterator<IndiaStateCodeCSV> stateCSVIterator = csvBuilder.getCSVFileIterator(reader,
-                    IndiaStateCodeCSV.class);
+                                                                                        IndiaStateCodeCSV.class);
             return this.getCount(stateCSVIterator);
         } catch (IOException e) {
             throw new CensusAnalyserException(e.getMessage(),
@@ -44,6 +50,8 @@ public class CensusAnalyser {
                 type = CensusAnalyserException.ExceptionType.CENSUS_HEADER_PROBLEM;
             }
             throw new CensusAnalyserException(e.getMessage(), type);
+        } catch (CSVBuilderException e) {
+            throw new CensusAnalyserException(e.getMessage(), e.type.name());
         }
     }
 
